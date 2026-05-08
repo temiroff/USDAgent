@@ -4,63 +4,62 @@ from __future__ import annotations
 
 from pxr import Gf, UsdGeom  # type: ignore[import]
 
-from usdagent.schemas import Matrix4d, StageHandle
-from usdagent.tools.stage import _get_stage
+from usdagent.schemas import Matrix4d
+from usdagent.tools.stage import get_stage
 
 
-def _xformable(stage: object, path: str) -> UsdGeom.Xformable:
-    from pxr import Usd  # type: ignore[import]
-    prim = stage.GetPrimAtPath(path)  # type: ignore[attr-defined]
+def _xformable(stage: object, prim_path: str) -> UsdGeom.Xformable:
+    prim = stage.GetPrimAtPath(prim_path)  # type: ignore[attr-defined]
     if not prim.IsValid():
-        raise ValueError(f"Prim does not exist: {path}")
+        raise ValueError(f"Prim does not exist: {prim_path}")
     xform = UsdGeom.Xformable(prim)
     if not xform:
-        raise TypeError(f"Prim at {path} is not Xformable")
+        raise TypeError(f"Prim at {prim_path} is not Xformable")
     return xform
 
 
 def set_translate(
-    handle: StageHandle,
-    path: str,
+    stage_path: str,
+    prim_path: str,
     xyz: tuple[float, float, float],
 ) -> None:
     """Set the translation (position) of a prim in world space."""
-    stage = _get_stage(handle)
-    xform = _xformable(stage, path)
+    stage = get_stage(stage_path)
+    xform = _xformable(stage, prim_path)
     op = _get_or_add_op(xform, UsdGeom.XformOp.TypeTranslate)
     op.Set(Gf.Vec3d(*xyz))
 
 
 def set_rotate(
-    handle: StageHandle,
-    path: str,
+    stage_path: str,
+    prim_path: str,
     xyz: tuple[float, float, float],
 ) -> None:
     """Set the XYZ Euler rotation of a prim in degrees."""
-    stage = _get_stage(handle)
-    xform = _xformable(stage, path)
+    stage = get_stage(stage_path)
+    xform = _xformable(stage, prim_path)
     op = _get_or_add_op(xform, UsdGeom.XformOp.TypeRotateXYZ)
     op.Set(Gf.Vec3f(*xyz))
 
 
 def set_scale(
-    handle: StageHandle,
-    path: str,
+    stage_path: str,
+    prim_path: str,
     xyz: tuple[float, float, float],
 ) -> None:
     """Set the scale of a prim on X, Y, Z axes."""
-    stage = _get_stage(handle)
-    xform = _xformable(stage, path)
+    stage = get_stage(stage_path)
+    xform = _xformable(stage, prim_path)
     op = _get_or_add_op(xform, UsdGeom.XformOp.TypeScale)
     op.Set(Gf.Vec3f(*xyz))
 
 
-def get_world_transform(handle: StageHandle, path: str) -> Matrix4d:
+def get_world_transform(stage_path: str, prim_path: str) -> Matrix4d:
     """Get the 4x4 world-space transform matrix of a prim."""
-    stage = _get_stage(handle)
-    prim = stage.GetPrimAtPath(path)
+    stage = get_stage(stage_path)
+    prim = stage.GetPrimAtPath(prim_path)
     if not prim.IsValid():
-        raise ValueError(f"Prim does not exist: {path}")
+        raise ValueError(f"Prim does not exist: {prim_path}")
     xform_cache = UsdGeom.XformCache()
     matrix = xform_cache.GetLocalToWorldTransform(prim)
     rows = [list(matrix.GetRow(i)) for i in range(4)]

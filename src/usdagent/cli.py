@@ -43,8 +43,8 @@ def validate(stage_path: str) -> None:
     from usdagent.tools.stage import open_stage
     from usdagent.tools.validate import validate_stage
 
-    handle = open_stage(stage_path)
-    report = validate_stage(handle)
+    open_stage(stage_path)
+    report = validate_stage(stage_path)
 
     if report.is_valid:
         console.print("[green]Stage is valid.[/]")
@@ -67,8 +67,8 @@ def info(stage_path: str) -> None:
     """Print stage metadata."""
     from usdagent.tools.stage import get_stage_metadata, open_stage
 
-    handle = open_stage(stage_path)
-    meta = get_stage_metadata(handle)
+    open_stage(stage_path)
+    meta = get_stage_metadata(stage_path)
     console.print(f"Path:           {meta.path}")
     console.print(f"Up axis:        {meta.up_axis}")
     console.print(f"Meters/unit:    {meta.meters_per_unit}")

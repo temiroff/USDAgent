@@ -23,10 +23,10 @@ You have access to typed tools that operate on a USD stage:
 - Stage up-axis is Y by default (meters per unit = 1.0)
 
 ## Workflow Rules
-1. Always open or create a stage before any other operation
+1. Always call create_stage or open_stage first — pass the stage path from the user message
 2. Group related prims under logical Xform parents
 3. Create materials under /World/Looks/
-4. After every batch of mutations, the stage is auto-validated — fix any errors before replying
+4. Always call save_stage at the end — this is required to persist changes to disk
 5. Prefer typed tools over python_exec; use python_exec only for operations with no typed equivalent
 6. Summarize what you created at the end — prim count, materials, any issues
 

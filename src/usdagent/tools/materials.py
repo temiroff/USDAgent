@@ -6,38 +6,38 @@ from typing import Any
 
 from pxr import UsdShade  # type: ignore[import]
 
-from usdagent.schemas import MaterialInfo, StageHandle
-from usdagent.tools.stage import _get_stage
+from usdagent.schemas import MaterialInfo
+from usdagent.tools.stage import get_stage
 
 
 def create_material(
-    handle: StageHandle,
-    path: str,
+    stage_path: str,
+    material_path: str,
     shader_type: str = "UsdPreviewSurface",
 ) -> MaterialInfo:
-    """Create a new material prim with a shader at path/Shader. Default shader is UsdPreviewSurface."""
-    stage = _get_stage(handle)
-    material = UsdShade.Material.Define(stage, path)
-    shader = UsdShade.Shader.Define(stage, f"{path}/Shader")
+    """Create a new material prim with a shader at material_path/Shader. Default shader is UsdPreviewSurface."""
+    stage = get_stage(stage_path)
+    material = UsdShade.Material.Define(stage, material_path)
+    shader = UsdShade.Shader.Define(stage, f"{material_path}/Shader")
     shader.CreateIdAttr(shader_type)
     material.CreateSurfaceOutput().ConnectToSource(
         shader.ConnectableAPI(), "surface"
     )
     return MaterialInfo(
-        path=path,
+        path=material_path,
         type_name="Material",
         shader_type=shader_type,
     )
 
 
 def set_shader_input(
-    handle: StageHandle,
+    stage_path: str,
     material_path: str,
     input_name: str,
     value: Any,
 ) -> None:
     """Set a shader input on a material (e.g. diffuseColor, roughness, metallic, opacity)."""
-    stage = _get_stage(handle)
+    stage = get_stage(stage_path)
     shader_path = f"{material_path}/Shader"
     shader = UsdShade.Shader.Get(stage, shader_path)
     if not shader:
@@ -49,12 +49,12 @@ def set_shader_input(
 
 
 def bind_material(
-    handle: StageHandle,
+    stage_path: str,
     prim_path: str,
     material_path: str,
 ) -> None:
     """Bind a material to a prim so it renders with that material."""
-    stage = _get_stage(handle)
+    stage = get_stage(stage_path)
     prim = stage.GetPrimAtPath(prim_path)
     if not prim.IsValid():
         raise ValueError(f"Prim does not exist: {prim_path}")

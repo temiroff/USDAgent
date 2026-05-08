@@ -8,7 +8,7 @@ import tempfile
 import textwrap
 from pathlib import Path
 
-from usdagent.schemas import ExecResult, StageHandle
+from usdagent.schemas import ExecResult
 
 
 _SANDBOX_PREAMBLE = """\
@@ -20,16 +20,12 @@ stage = Usd.Stage.Open({stage_path!r})
 
 
 def run_usd_python(
-    handle: StageHandle,
+    stage_path: str,
     code: str,
     timeout_s: int = 10,
 ) -> ExecResult:
-    """Execute arbitrary USD Python in a subprocess with the stage pre-loaded.
-
-    The subprocess receives a live stage opened from handle.path.
-    It must call stage.GetRootLayer().Save() itself if mutations should persist.
-    """
-    preamble = _SANDBOX_PREAMBLE.format(stage_path=handle.path)
+    """Execute arbitrary USD Python in a subprocess with the stage pre-loaded as `stage`. Call stage.GetRootLayer().Save() to persist changes."""
+    preamble = _SANDBOX_PREAMBLE.format(stage_path=stage_path)
     full_code = preamble + "\n" + textwrap.dedent(code)
 
     with tempfile.NamedTemporaryFile(
