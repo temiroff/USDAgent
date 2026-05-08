@@ -18,6 +18,7 @@ def _get_stage(handle: StageHandle) -> Usd.Stage:
 
 
 def open_stage(path: str) -> StageHandle:
+    """Open an existing USD stage file (.usda or .usd) and return a handle."""
     try:
         stage = Usd.Stage.Open(path)
     except Exception as exc:
@@ -30,6 +31,7 @@ def open_stage(path: str) -> StageHandle:
 
 
 def create_stage(path: str, up_axis: str = "Y") -> StageHandle:
+    """Create a new empty USD stage at path with the given up axis (Y or Z)."""
     stage = Usd.Stage.CreateNew(path)
     UsdGeom.SetStageUpAxis(stage, up_axis)
     UsdGeom.SetStageMetersPerUnit(stage, 1.0)
@@ -39,6 +41,7 @@ def create_stage(path: str, up_axis: str = "Y") -> StageHandle:
 
 
 def save_stage(handle: StageHandle, path: str | None = None) -> None:
+    """Save the stage in place, or export to a new path if provided."""
     stage = _get_stage(handle)
     if path:
         stage.Export(path)
@@ -47,6 +50,7 @@ def save_stage(handle: StageHandle, path: str | None = None) -> None:
 
 
 def list_prims(handle: StageHandle, root_path: str = "/") -> list[PrimInfo]:
+    """List all prims in the stage tree starting from root_path."""
     stage = _get_stage(handle)
     root = stage.GetPrimAtPath(root_path)
     if not root.IsValid():
@@ -65,6 +69,7 @@ def list_prims(handle: StageHandle, root_path: str = "/") -> list[PrimInfo]:
 
 
 def get_stage_metadata(handle: StageHandle) -> StageMetadata:
+    """Return metadata for the stage: up axis, meters per unit, layer count, prim count."""
     stage = _get_stage(handle)
     all_prims = list(stage.Traverse())
     return StageMetadata(

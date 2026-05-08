@@ -16,6 +16,7 @@ def create_prim(
     type_name: str,
     attributes: dict[str, Any] | None = None,
 ) -> PrimInfo:
+    """Define a new typed prim at path (e.g. Xform, Mesh, Sphere, Cube). Optionally set attributes."""
     stage = _get_stage(handle)
     prim = stage.DefinePrim(path, type_name)
     if attributes:
@@ -34,6 +35,7 @@ def create_prim(
 
 
 def delete_prim(handle: StageHandle, path: str) -> None:
+    """Delete a prim and all its children from the stage."""
     stage = _get_stage(handle)
     prim = stage.GetPrimAtPath(path)
     if not prim.IsValid():
@@ -42,6 +44,7 @@ def delete_prim(handle: StageHandle, path: str) -> None:
 
 
 def get_prim(handle: StageHandle, path: str) -> PrimInfo:
+    """Get info and attributes for the prim at path."""
     stage = _get_stage(handle)
     prim = stage.GetPrimAtPath(path)
     if not prim.IsValid():
@@ -60,6 +63,7 @@ def get_prim(handle: StageHandle, path: str) -> PrimInfo:
 
 
 def set_attribute(handle: StageHandle, path: str, name: str, value: Any) -> None:
+    """Set the value of an existing attribute on a prim."""
     stage = _get_stage(handle)
     prim = stage.GetPrimAtPath(path)
     if not prim.IsValid():
@@ -71,12 +75,14 @@ def set_attribute(handle: StageHandle, path: str, name: str, value: Any) -> None
 
 
 def add_reference(handle: StageHandle, path: str, asset_path: str) -> None:
+    """Add a USD reference to an external asset at prim path."""
     stage = _get_stage(handle)
     prim = stage.OverridePrim(path)
     prim.GetReferences().AddReference(asset_path)
 
 
 def add_payload(handle: StageHandle, path: str, asset_path: str) -> None:
+    """Add a USD payload (deferred reference) to an external asset at prim path."""
     stage = _get_stage(handle)
     prim = stage.OverridePrim(path)
     prim.GetPayloads().AddPayload(asset_path)

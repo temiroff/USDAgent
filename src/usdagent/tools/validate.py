@@ -9,6 +9,7 @@ from usdagent.tools.stage import _get_stage
 
 
 def validate_stage(handle: StageHandle) -> ValidationReport:
+    """Run a full integrity check on the stage and return a ValidationReport with all issues."""
     stage = _get_stage(handle)
     issues: list[Issue] = []
     broken = find_broken_references(handle)
@@ -27,16 +28,10 @@ def validate_stage(handle: StageHandle) -> ValidationReport:
 
 
 def find_broken_references(handle: StageHandle) -> list[str]:
-    stage = _get_stage(handle)
+    """Return a list of asset paths that cannot be resolved in the current stage."""
     broken: list[str] = []
-    for prim in stage.Traverse():
-        for ref in prim.GetMetadata("references") or []:
-            # A simplified check: if asset path is set and non-empty, try resolving.
-            pass
-    # Use UsdUtils to get unresolved paths
     try:
         result = UsdUtils.ComputeAllDependencies(handle.path)
-        # result is (layers, assets, unresolved)
         unresolved = result[2] if len(result) >= 3 else []
         broken.extend(str(u) for u in unresolved)
     except Exception:
@@ -45,6 +40,7 @@ def find_broken_references(handle: StageHandle) -> list[str]:
 
 
 def check_layer_stack(handle: StageHandle) -> list[Issue]:
+    """Check the layer stack for duplicate or unsaved layers."""
     stage = _get_stage(handle)
     issues: list[Issue] = []
     seen: set[str] = set()

@@ -24,6 +24,7 @@ def set_translate(
     path: str,
     xyz: tuple[float, float, float],
 ) -> None:
+    """Set the translation (position) of a prim in world space."""
     stage = _get_stage(handle)
     xform = _xformable(stage, path)
     op = _get_or_add_op(xform, UsdGeom.XformOp.TypeTranslate)
@@ -35,6 +36,7 @@ def set_rotate(
     path: str,
     xyz: tuple[float, float, float],
 ) -> None:
+    """Set the XYZ Euler rotation of a prim in degrees."""
     stage = _get_stage(handle)
     xform = _xformable(stage, path)
     op = _get_or_add_op(xform, UsdGeom.XformOp.TypeRotateXYZ)
@@ -46,6 +48,7 @@ def set_scale(
     path: str,
     xyz: tuple[float, float, float],
 ) -> None:
+    """Set the scale of a prim on X, Y, Z axes."""
     stage = _get_stage(handle)
     xform = _xformable(stage, path)
     op = _get_or_add_op(xform, UsdGeom.XformOp.TypeScale)
@@ -53,6 +56,7 @@ def set_scale(
 
 
 def get_world_transform(handle: StageHandle, path: str) -> Matrix4d:
+    """Get the 4x4 world-space transform matrix of a prim."""
     stage = _get_stage(handle)
     prim = stage.GetPrimAtPath(path)
     if not prim.IsValid():

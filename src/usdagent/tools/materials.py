@@ -15,6 +15,7 @@ def create_material(
     path: str,
     shader_type: str = "UsdPreviewSurface",
 ) -> MaterialInfo:
+    """Create a new material prim with a shader at path/Shader. Default shader is UsdPreviewSurface."""
     stage = _get_stage(handle)
     material = UsdShade.Material.Define(stage, path)
     shader = UsdShade.Shader.Define(stage, f"{path}/Shader")
@@ -35,6 +36,7 @@ def set_shader_input(
     input_name: str,
     value: Any,
 ) -> None:
+    """Set a shader input on a material (e.g. diffuseColor, roughness, metallic, opacity)."""
     stage = _get_stage(handle)
     shader_path = f"{material_path}/Shader"
     shader = UsdShade.Shader.Get(stage, shader_path)
@@ -51,6 +53,7 @@ def bind_material(
     prim_path: str,
     material_path: str,
 ) -> None:
+    """Bind a material to a prim so it renders with that material."""
     stage = _get_stage(handle)
     prim = stage.GetPrimAtPath(prim_path)
     if not prim.IsValid():

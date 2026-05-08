@@ -25,6 +25,7 @@ dependencies = [
     "langchain-openai>=0.2",
     "anthropic>=0.30",
     "openai>=1.30",
+    "langchain-ollama>=0.2",
     "pydantic>=2.7",
     "click>=8.1",
     "rich>=13.0",

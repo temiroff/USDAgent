@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import random
 
-from pxr import Gf, Usd, UsdGeom  # type: ignore[import]
+from pxr import Usd, UsdGeom  # type: ignore[import]
 
 from usdagent.schemas import BoundingBox, ScatterResult, StageHandle
 from usdagent.tools.stage import _get_stage
@@ -68,7 +68,7 @@ def scatter_in_volume(
     count: int,
     seed: int = 0,
 ) -> ScatterResult:
-    """Scatter instances randomly within an explicit bounding box."""
+    """Scatter instances randomly within an explicit bounding box volume."""
     stage = _get_stage(handle)
     rng = random.Random(seed)
     created: list[str] = []

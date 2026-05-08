@@ -34,9 +34,9 @@ def get_llm(
         )
 
     if provider == Provider.OLLAMA:
-        from langchain_community.chat_models import ChatOllama  # type: ignore[import]
+        from langchain_ollama import ChatOllama  # type: ignore[import]
         return ChatOllama(
-            model=model or "llama3",
+            model=model or "qwen35-opus",
             **kwargs,
         )
 
