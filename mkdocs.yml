@@ -1,0 +1,17 @@
+site_name: USDAgent
+site_description: Orchestrate USD scenes via natural language
+repo_url: https://github.com/your-org/usdagent
+theme:
+  name: material
+  palette:
+    primary: indigo
+nav:
+  - Home: index.md
+  - Quickstart: quickstart.md
+  - Tools Reference: tools-reference.md
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
