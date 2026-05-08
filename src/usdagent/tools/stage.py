@@ -18,7 +18,10 @@ def _get_stage(handle: StageHandle) -> Usd.Stage:
 
 
 def open_stage(path: str) -> StageHandle:
-    stage = Usd.Stage.Open(path)
+    try:
+        stage = Usd.Stage.Open(path)
+    except Exception as exc:
+        raise FileNotFoundError(f"Could not open USD stage: {path}") from exc
     if not stage:
         raise FileNotFoundError(f"Could not open USD stage: {path}")
     _open_stages[path] = stage
