@@ -155,17 +155,16 @@ def build_warehouse(stage_path: str) -> None:
 
     _bind(stage, "/World/Floor", concrete)
 
-    # Shelf unit prototype — bind material BEFORE deactivating parent
-    UsdGeom.Xform.Define(stage, "/World/Prototypes")
-    _make_box(stage, "/World/Prototypes/ShelfUnit", w=1.0, h=2.5, d=0.4)
-    _bind(stage, "/World/Prototypes/ShelfUnit", metal)
-    stage.GetPrimAtPath("/World/Prototypes").SetActive(False)
+    # Prototype lives INSIDE the PointInstancer — this is the canonical USD pattern
+    # that all tools (Blender, usdview, Omniverse) correctly resolve.
+    _make_box(stage, "/World/ShelfInstancer/ShelfUnit", w=1.0, h=2.5, d=0.4)
+    _bind(stage, "/World/ShelfInstancer/ShelfUnit", metal)
 
     # Scatter 50 shelf units on the floor via PointInstancer
     _scatter_instancer(
         stage,
         instancer_path="/World/ShelfInstancer",
-        prototype_path="/World/Prototypes/ShelfUnit",
+        prototype_path="/World/ShelfInstancer/ShelfUnit",
         count=50,
         bounds_min=(-9.0, 0.0, -4.5),
         bounds_max=( 9.0, 0.0,  4.5),
