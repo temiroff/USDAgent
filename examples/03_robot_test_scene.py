@@ -11,5 +11,11 @@ PROMPT = (
 )
 
 if __name__ == "__main__":
-    result = run(prompt=PROMPT, stage_path="robot_test.usda")
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--provider", default="ollama")
+    parser.add_argument("--model", default="qwen2.5:7b")
+    args = parser.parse_args()
+
+    result = run(prompt=PROMPT, stage_path="robot_test.usda", provider=args.provider, model=args.model)
     print(result)
