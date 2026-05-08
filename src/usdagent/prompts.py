@@ -32,7 +32,12 @@ You have access to typed tools that operate on a USD stage:
 
 ## Common Patterns
 - Scene root: create_prim("/World", "Xform")
-- Floor: create_prim("/World/Floor", "Mesh") then set geometry attributes
-- Scatter 50 objects: scatter_on_surface(target="/World/Floor", count=50, ...)
-- Concrete material: create_material → set diffuseColor=(0.4,0.4,0.4), roughness=0.9
+- Floor plane: create_prim("/World/Floor", "Mesh") — a Mesh with no geometry data is invisible.
+  Use a Cube scaled flat instead: create_prim("/World/Floor", "Cube"), set_scale(stage, "/World/Floor", (10, 0.05, 5))
+- Shelf unit: create_prim("/World/ShelfUnit", "Cube"), set_scale(stage, "/World/ShelfUnit", (1, 2.5, 0.4))
+- Scatter 50 objects on a 20x10m floor — ALWAYS pass explicit bounds because empty meshes have no BBox:
+  scatter_on_surface(stage_path, "/World/Floor", ["/World/ShelfUnit"], count=50,
+                     bounds_min=(-10, 0, -5), bounds_max=(10, 0, 5), rotation_jitter=180)
+- Concrete material: create_material → set_shader_input diffuseColor=(0.4,0.4,0.4), roughness=0.9
+- Metal material: create_material → set_shader_input diffuseColor=(0.6,0.6,0.7), metallic=1.0, roughness=0.2
 """
